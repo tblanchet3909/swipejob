@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victaure</title>
+    <link rel="icon" href="icone_Victaure.ico" type="image/x-icon">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: #eaeaea; /* Light gray background */
+            color: #333; /* Dark text */
+            font-size: 12px; 
+        }
+        button, a {
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover, a:hover {
+            transform: translateY(-2px);
+            background-color: #f39c12; /* Highlighted color for interactions */
+            color: #fff; /* Ensures text is readable on hover */
+        }
+        #sidebar { 
+            position: fixed; 
+            width: 220px; 
+            height: 100%; 
+            background-color: #2c3e50; 
+            padding-top: 20px; 
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        #sidebar h1 { 
+            color: #fff;
+            text-align: center;
+            font-size: 18px; 
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        #sidebar p { 
+            color: #fff;
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        #sidebar a { 
+            padding: 8px 15px; 
+            text-decoration: none; 
+            font-size: 14px; 
+            color: white; 
+            display: block; 
+            margin-bottom: 8px;
+            border-radius: 5px;
+        }
+        #sidebar a:hover { 
+            background-color: #34495e; 
+            color: #f0f2f5;
+        }
+        #content { 
+            margin-left: 240px; 
+            padding: 15px; 
+            transition: margin-left 0.3s ease;
+        }
+        .dashboard-section { 
+            background-color: #2b303b;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            color: #fff; /* Ensure text is white in these sections */
+            animation: fadeIn 0.6s ease-out; /* Fade-in animation */
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .swipe-card {
+            background-color: #3b4048;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .video-container video {
+            width: 100%;
+            max-width: 720px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        footer {
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            font-size: 10px;
+        }
+        footer a {
+            color: #ecf0f1;
+            margin: 0 8px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: #f39c12;
+        }
+        #chatbot-container {
+            transition: all 0.3s ease;
+            position: fixed;
+            bottom: 60px; /* Positioned just above the footer */
+            right: 10px;
+            width: 250px; /* Adjusted width */
+            max-height: 400px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            border-radius: 10px;
+        }
+        #chat-box {
+            background-color: #f5f5f5;
+            padding: 10px;
+            max-height: 300px; /* Adjusted height */
+            overflow-y: auto;
+            border-radius: 10px 10px 0 0;
+            color: #333; /* Dark text on light background */
+        }
+        #typing-indicator {
+            display: none;
+            color: #333;
+            padding: 10px;
+        }
+        .message-bubble {
+            background-color: #eaeaea;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+            color: #333;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            align-self: flex-end;
+            background-color: #0084ff;
+            color: #fff;
+        }
+        #user-input {
+            width: calc(100% - 70px);
+            padding: 10px;
+            border: none;
+            border-radius: 0 0 0 10px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        #send-btn {
+            padding: 10px;
+            background-color: #546e7a;
+            color: white;
+            border: none;
+            border-radius: 0 0 10px 0;
+            transition: background-color 0.3s ease;
+        }
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background-color: #37474f;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #chatbot-toggle:hover {
+            background-color: #546e7a;
+        }
+        #language-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+    <style>
+        .section {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body onload="setLanguage('fr')">
+
+<!-- Language Toggle Button -->
+<div id="language-toggle">
+    <button onclick="toggleLanguage()">FR/EN</button>
+</div>
+
+<div id="sidebar">
+    <h1>Victaure</h1>
+    <p>La main d'oeuvre au bout des doigts</p>
+    <div class="auth-links">
+        <a href="javascript:void(0)" onclick="showSection('register')">S'enregistrer</a>
+        <a href="javascript:void(0)" onclick="showSection('login')">Se connecter</a>
+    </div>
+    <a href="javascript:void(0)" onclick="showSection('accueil')">Accueil</a>
+    <a href="javascript:void(0)" onclick="showSection('dashboard')">Tableau de Bord</a>
+    <a href="javascript:void(0)" onclick="showSection('le_chat')">Le Chat</a>
+    <a href="javascript:void(0)" onclick="showSection('swipe_job')">Swipe Job</a>
+    <a href="javascript:void(0)" onclick="showSection('emplois_reguliers')">Emplois Réguliers</a>
+    <a href="javascript:void(0)" onclick="showSection('buy_sell')">Acheter et Vendre</a>
+    <a href="javascript:void(0)" onclick="showSection('housing')">Logement</a>
+    <a href="javascript:void(0)" onclick="showSection('financial_services')">Services Financiers</a>
+    <a href="javascript:void(0)" onclick="showSection('insurance')">Assurances</a>
+    <a href="javascript:void(0)" onclick="showSection('travel')">Voyages</a>
+</div>
+
+<div id="content">
+    <div id="accueil" class="section">
+        <h2>Bienvenue chez Victaure</h2>
+        <p>
+            Découvrez <strong>Victaure</strong> - Votre Réseau de Services à la Demande.<br>
+            <strong>Swipe, Match, Travaillez.</strong><br>
+            Chez <strong>Victaure</strong>, nous réinventons la façon dont vous trouvez des opportunités de travail. 
+            Grâce à notre interface innovante "Swipe a Job", connecter entreprises et talents n’a jamais été aussi rapide et intuitif.
+        </p>
+        <p>
+            <strong>Un Monde d'Opportunités à Portée de Swipe.</strong><br>
+            Trouvez le job parfait ou le service dont vous avez besoin en quelques glissements de doigt. Que vous soyez freelance, 
+            entreprise, ou particulier, <strong>Victaure</strong> est votre guichet unique pour les missions ponctuelles, 
+            les emplois réguliers, et bien plus encore.
+        </p>
+        <p>
+            <strong>Une Plateforme Complète, Un Service Inégalé.</strong><br>
+            De la recherche de missions aux services complémentaires comme le logement, les voyages, et les assurances, 
+            <strong>Victaure</strong> vous offre une solution tout-en-un pour gérer votre carrière ou votre entreprise.
+        </p>
+        <p>
+            <strong>Simple. Sûr. Transparent.</strong><br>
+            Votre sécurité est notre priorité. Chaque transaction est protégée, chaque match est vérifié, et chaque besoin est 
+            comblé avec le plus grand soin.
+        </p>
+        <p>
+            <strong>Rejoignez la Révolution des Services à la Demande.</strong><br>
+            Avec <strong>Victaure</strong>, vous êtes à un swipe de votre prochaine opportunité. Qu'attendez-vous pour transformer 
+            votre façon de travailler?
+        </p>
+
+        <!-- Video Section -->
+        <div class="video-container">
+            <video controls>
+                <source src="pub_victaure.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la vidéo.
+            </video>
+        </div>
+    </div>
+
+    <div id="dashboard" class="section">
+        <div id="dashboard-container">
+            <!-- Dashboard content here -->
+        </div>
+    </div>
+
+    <div id="le_chat" class="section">
+        <h2>Le Chat</h2>
+        <p>Ceci est où le chatbot apparaîtra.</p>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2024 Victaure. Tous droits réservés. 
+    <a href="javascript:void(0)" onclick="showSection('cookies')">Cookies</a> |
+    <a href="javascript:void(0)" onclick="showSection('faq')">FAQ</a> |
+    <a href="javascript:void(0)" onclick="showSection('contact')">Contact</a>
+    </p>
+</footer>
+
+<div id="chatbot-container">
+    <div id="chat-box"></div>
+    <div id="typing-indicator">Victaure est en train d'écrire...</div>
+    <input type="text" id="user-input" placeholder="Tapez votre message ici..." onkeypress="handleKeyPress(event)">
+    <button id="send-btn" onclick="sendMessage()">Envoyer</button>
+</div>
+<div id="chatbot-toggle" onclick="toggleChatbot()">💬</div>
+
+<script>
+    function showSection(sectionId) {
+        var sections = document.getElementsByClassName('section');
+        for (var i = 0; i < sections.length; i++) {
+            sections[i].style.display = 'none';
+        }
+        document.getElementById(sectionId).style.display = 'block';
+    }
+
+    function toggleChatbot() {
+        var chatbotContainer = document.getElementById('chatbot-container');
+        chatbotContainer.classList.toggle('open');
+        chatbotContainer.style.display = chatbotContainer.classList.contains('open') ? 'flex' : 'none';
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        var userInput = document.getElementById('user-input').value;
+        var chatBox = document.getElementById('chat-box');
+        var typingIndicator = document.getElementById('typing-indicator');
+
+        if (userInput.trim()) {
+            typingIndicator.style.display = 'block';
+
+            setTimeout(function() {
+                typingIndicator.style.display = 'none';
+                var messageDiv = document.createElement('div');
+                messageDiv.textContent = userInput;
+                messageDiv.classList.add('message-bubble', 'user-message');
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                document.getElementById('user-input').value = '';
+            }, 1000); // Simulated typing delay
+        }
+    }
+
+    function toggleLanguage() {
+        // Basic example: toggle between French and English
+        var currentLang = document.documentElement.lang;
+        if (currentLang === "fr") {
+            document.documentElement.lang = "en";
+            document.title = "Victaure";
+            document.querySelector("h2").innerText = "Welcome to Victaure";
+            document.querySelector("p").innerText = "This is the home page.";
+            // Update other text contents accordingly...
+        } else {
+            document.documentElement.lang = "fr";
+            document.title = "Victaure";
+            document.querySelector("h2").innerText = "Bienvenue chez Victaure";
+            document.querySelector("p").innerText = "Ceci est la page d'accueil.";
+            // Update other text contents accordingly...
+        }
+    }
+
+    window.onload = function() {
+        showSection('accueil');
+    }
+</script>
+
+</body>
+</html>
